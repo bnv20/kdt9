@@ -482,16 +482,79 @@ select last_name, salary from employees where salary > any
 
 --과제2_0511. 부서별 연봉 순위를 출력하세요.
 
+
 --과제3_0511. employees 테이블에서 employee_id와 salary만 추출해서 employee_salary 테이블을 생성하세요.
-drop table employees_salary;
+
 
 --과제4_0511. employees_salary 테이블에 first_name, last_name 컬럼을 추가하세요.
 
+
 --과제5_0511. last_name을 name으로 변경하세요.
+
 
 --과제6_0511. employees_salary 테이블의 employee_id에 기본키를 적용하고 CONSTRAINT_NAME을 ES_PK로 지정 후 
 --출력하세요.
 
+
 --과제7_0511. employees_salary 테이블의 employee_id에서 CONSTRAINT_NAME을 삭제후 삭제 여부를 확인하세요.
 
+
+
+--[DCL]
+DROP USER c##hmkd1 CASCADE; 
+CREATE USER c##hmkd1 IDENTIFIED BY hmkd1 DEFAULT TABLESPACE users TEMPORARY TABLESPACE temp PROFILE DEFAULT;
+GRANT CONNECT, RESOURCE TO c##hmkd1;
+GRANT CREATE VIEW, CREATE SYNONYM TO c##hmkd1;
+GRANT UNLIMITED TABLESPACE TO c##hmkd1;
+ALTER USER c##hmkd1 ACCOUNT UNLOCK;
+--사용자와 해당 사용자에게 부여된 모든 객체와 권한을 함께 삭제하도록 "CASCADE" 옵션을 사용하여 
+--사용자를 삭제합니다. 이는 해당 사용자를 완전히 삭제하려는 경우에 유용합니다.
+-- "c##hmkd1"이라는 사용자를 생성합니다. "IDENTIFIED BY" 키워드 다음의 "hmkd1"은 해당 사용자의 
+--암호를 지정 
+--"DEFAULT TABLESPACE" 키워드 다음의 "users"는 해당 사용자가 기본적으로 사용할 테이블 스페이스를 지정
+--"TEMPORARY TABLESPACE" 키워드 다음의 "temp"는 해당 사용자가 일시적으로 사용할 테이블 스페이스를 지정
+--"PROFILE DEFAULT"는 해당 사용자의 프로필을 "DEFAULT"로 설정합니다.
+--"CONNECT"와 "RESOURCE" 권한을 "c##hmkd1" 사용자에게 부여. 
+--"CONNECT" 권한은 해당 사용자가 데이터베이스에 연결할 수 있는 권한을 부여하고 
+--"RESOURCE" 권한은 해당 사용자가 테이블, 시퀀스, 프로시저 등을 만들 수 있는 권한을 부여
+--"CREATE VIEW"와 "CREATE SYNONYM" 권한을 "c##hmkd1" 사용자에게 부여
+--"CREATE VIEW" 권한은 해당 사용자가 뷰를 생성할 수 있는 권한을 부여하고 
+--"CREATE SYNONYM" 권한은 해당 사용자가 시노님을 생성할 수 있는 권한을 부여합니다.
+--"UNLIMITED TABLESPACE" 권한을 "c##hmkd1" 사용자에게 부여 이 권한은 해당 사용자가 무제한으로 
+--테이블 스페이스를 사용할 수 있는 권한을 부여
+--"c##hmkd1" 사용자의 계정 잠금을 해제. 계정 잠금은 일정 시간 동안 로그인 실패가 발생하면 자동으로 
+--발생하는 보안 기능. 계정 잠금을 해제하여 해당 사용자가 로그인할 수 있도록 합니다.
+
+CREATE USER C##USER01
+IDENTIFIED BY USERPASS
+
+--DROP USER : 사용자 삭제
+--DROP USER 사용자 ID
+DROP USER C##USER01;
+
+--권한 종류 확인
+SELECT * FROM dba_sys_privs;
+
+--트랜잭션
+
+--트랜잭션은 데이터베이스의 논리적 연산단위이다. 
+--트랜잭션(TRANSACTION)이란 밀접히 관련되어 분리될 수 없는 한 개 이상 의 데이터베이스 조작을 가리킨다. 
+--하나의 트랜잭션에는 하나 이상의 SQL 문장이 포함된다.
+--트랜잭션은 의미적으로 분할할 수 없는 최소의 단위이다. 그렇기 때문에 전부 적용하거나 전부 취소한다. 
+--즉, TRANSACTION 은  ALL OR NOTHING의 개념인 것이다.
+--[사례] 계좌이체라는 작업단위는 두개의 스텝이 모두 성공적으로 완료되었을 때 종료된다. 
+--둘 중 하나라도 실패할 경우 계좌이체는 원래의 금액을 유지하고 있어야만 한다.
+--STEP1. 100번 계좌의 잔액에서 10,000원을 뺀다. 
+--STEP2. 200번 계좌의 잔액에 10,000원을 더한다
+
+--TCL
+--트랜잭션을 콘트롤하는 TCL(TRANSACTION CONTROL LANGUAGE)
+--커밋(COMMIT) :
+--COMMIT 명령어는 INSERT 문장, UPDATE 문장, DELETE 문장 사용 후에 일련의 변경 작업이 완료 
+--되었음을 데이터베이스 알려 주기 위해 사용
+--"변경된 데이터를 데이터베이스에 영구적으로 반영하라"
+--롤백(ROLLBACK) : 
+--"변경된 데이터가 문제가 있으니 변경 전 데이터로 복귀하라“
+--저장점(SAVEPOINT) :
+--"데이터 변경을 사전에 지정한 저장점까지만 롤백하라"
 
