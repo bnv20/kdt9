@@ -335,12 +335,53 @@ from test5 t5
 full outer join test6 t6 on t5.id = t6.id;
 
 --과제2_0510. test5, test6의 합집합, 교집합, 차이를 where를 이용해서 구하세요. 
+select * from test5;
+select * from test6;
+SELECT ID FROM test5
+WHERE ENG > 80
+UNION
+SELECT ID FROM test6
+WHERE MATH > 70;
+
+SELECT ID  FROM test5
+WHERE ENG > 80
+UNION ALL
+SELECT ID FROM test6
+WHERE MATH > 70;
+
+SELECT ID  FROM test5
+WHERE ENG > 80
+INTERSECT
+SELECT ID FROM test6
+WHERE MATH > 70;
+
+SELECT ID  FROM test5
+WHERE ENG > 70
+MINUS
+SELECT ID FROM test6
+WHERE MATH > 90;
+
 
 --과제3_0510. 사번이 120번인 사람의 사번, 이름, 업무(job_id), 업무명(job_title)을 출력.
 --join~on, where 로 조인하는 두 가지 방법 모두 사용.
 
+SELECT E.employee_id, E.last_name, E.job_id, J.job_title
+FROM employees E, jobs J
+WHERE E.job_id = J.job_id AND E.employee_id = 120;
+
+SELECT employee_id, last_name, E.job_id, job_title
+FROM employees E JOIN jobs J ON E.job_id=J.job_id 
+WHERE employee_id=120;
+
 --과제4_0510. employees, jobs, departments 세개의 테이블을 연결해서 employee_id, job_title, 
 --department_name을 출력하세요.
+select job_id,employee_id,last_name from employees;
+select * from jobs;
+select * from departments;
+SELECT employee_id, job_title, department_name 
+FROM employees E, jobs J, departments D
+WHERE E.job_id = J.job_id
+AND E.department_id = D.department_id;
 
 --과제5_0510. hr에 포함되는 6개의 테이블들을 분석해서 인사이트를 얻을 수 있는
 --결과물을 5개 이상 출력하세요. 
@@ -350,3 +391,107 @@ FROM DEPARTMENTS d, EMPLOYEES e
 WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
 GROUP BY DEPARTMENT_NAME
 ORDER BY AVG DESC;
+
+--rank() within group( order by 컬럼명 정렬 )
+select COMMISSION_PCT from employees
+order by COMMISSION_PCT desc;
+
+--rank 1위가 73번째
+select rank( 0.4 ) within group( order by COMMISSION_PCT desc ) from employees;
+select rank( 3000 ) within group( order by salary asc ) from employees;
+
+--count()
+--null은 제외하고 중복은 개수로 센다.
+select count( commission_pct ) from employees;
+select count( distinct commission_pct ) from employees;
+--전체행의 수
+select count( * ) from employees;		
+
+--GROUP BY  
+--*주의*	select 뒤에는 그룹으로 묶을 수 있는 컬럼만 올 수 있다.
+select department_id, round(avg( salary )) from employees group by department_id;
+select job_id, avg( salary ) from employees group by job_id;
+
+select job_id, avg( salary ), max( salary ), min( salary ) 
+from employees 
+group by job_id;
+
+--Q. 평균연봉이 5000이상인 부서들에 대해서 job_id 별로 연봉합계 연봉평균 최고연봉 최저연봉 출력
+--HAVING
+--group by 적용 뒤에 나온 결과에 특정 조건을 부여한다.
+select job_id, sum( salary ), avg( salary ), max( salary ), min( salary ) 
+from employees 
+group by job_id 
+having avg(salary)>=5000;
+
+--Q. 평균연봉이 10000이상인 부서들에 대해서 job_id 별로 연봉평균 부서인원 출력
+--(연봉평균 기준 내림차순 정렬)
+select job_id 업무, avg( salary ) 연봉평균, 
+count( employee_id ) 부서인원
+from employees
+group by job_id
+having avg( salary ) >= 10000
+order by avg( salary ) desc;
+
+--서브 쿼리
+--Seo 라는 사람의 부서명을 얻어 오려면 두 번 검색해야 한다.
+select department_id from employees where last_name='Seo';
+select department_name from departments where department_id=50;
+
+select department_id,department_name from departments 
+where department_id=(select department_id from employees where last_name='Seo');
+
+--평균보다 많은 급여를 받는 직원 검색
+select last_name, salary from employees where salary > 
+( select avg( salary ) from employees );
+
+--'Seo' 는 한명이기 때문에 단일행 서브 쿼리	
+select last_name, hire_date, department_id from employees 
+where department_id = ( select department_id 
+from employees where last_name='Seo' );
+
+--'King'은 두명이기 때문에 다중행 서브 쿼리
+select last_name, hire_date, department_id from employees 
+where department_id in ( select department_id 
+from employees where last_name='King' );
+
+--다중행	
+select last_name, salary from employees where salary > all 
+( select salary from employees where department_id = 100 );
+
+--단일행	
+select last_name, salary from employees where salary >  
+( select max( salary ) from employees where department_id = 100 );
+
+--특정부서보다 먼저 입사
+select last_name 이름, salary 연봉, department_id 부서, hire_date 입사일
+from employees
+where hire_date < all
+( select hire_date from employees where department_id = 100 );
+
+select last_name, salary from employees where salary > any 
+( select salary from employees where  department_id = 100 );
+
+--과제1_0511. 사번, 이름, 직급, 출력하세요. 단, 직급은 아래 기준에 의함
+--salary > 20000 then '대표이사'
+--salary > 15000 then '이사' 
+--salary > 10000 then '부장' 
+--salary > 5000 then '과장' 
+--salary > 3000 then '대리'
+--나머지 '사원'
+
+--과제2_0511. 부서별 연봉 순위를 출력하세요.
+
+--과제3_0511. employees 테이블에서 employee_id와 salary만 추출해서 employee_salary 테이블을 생성하세요.
+drop table employees_salary;
+
+--과제4_0511. employees_salary 테이블에 first_name, last_name 컬럼을 추가하세요.
+
+--과제5_0511. last_name을 name으로 변경하세요.
+
+--과제6_0511. employees_salary 테이블의 employee_id에 기본키를 적용하고 CONSTRAINT_NAME을 ES_PK로 지정 후 
+--출력하세요.
+
+--과제7_0511. employees_salary 테이블의 employee_id에서 CONSTRAINT_NAME을 삭제후 삭제 여부를 확인하세요.
+
+
