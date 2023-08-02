@@ -1,0 +1,122 @@
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #19b1ac;
+            /* 이 부분에서 배경색을 설정합니다. */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 10;
+            padding: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            margin-top: 50px;
+            width: 100vw;
+            max-width: 70vw;
+            height: 80vh;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            /* 글꼴 설정 */
+            padding: 20px;
+            /* 카드 내부의 여백을 20픽셀로 설정 */
+        }
+
+        .card .card-header h1 {
+            font-size: 2.5rem;
+            /* 크기 설정 */
+            font-weight: 700;
+            /* 두께 설정 */
+            margin-bottom: 10px;
+            /* 제목 아래의 여백을 10픽셀로 설정 */
+        }
+
+        .card .card-body .card-title {
+            font-size: 1.5rem;
+            /* 크기 설정 */
+            font-weight: 700;
+            /* 두께 설정 */
+            margin-bottom: 10px;
+            /* 부제목 아래의 여백을 10픽셀로 설정 */
+        }
+
+        .card .card-body .card-text {
+            font-size: 1rem;
+            /* 크기 설정 */
+            font-weight: 400;
+            /* 두께 설정 */
+            line-height: 1.5;
+            /* 줄 간격 설정 */
+        }
+
+    </style>
+</head>
+<!-- The rest of your HTML goes here. -->
+
+<body>
+    <div class="container">
+        <div class="card border-dark mb-3" style="min-width: 30rem; max-width: 80rem;">
+            <div class="card-header">
+                <h1>BERT를 활용한 파인튜닝 모델</h1>
+            </div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">감성 분석 (Sentiment Analysis)</h5>
+                <p class="card-text">주어진 문장의 극성(polarity)을 판별합니다.</p>
+                <textarea class="form-control" aria-describedby="basic-addon3" id="input"
+                    onkeypress="if(event.keyCode==13) {api_call(); return false;}" name="input" placeholder="문장을 입력하세요"
+                    rows="10"></textarea>
+                <p class="card-text">
+                <div class="alert alert-info" role="alert">
+                    <h5 id="prediction" class="alert-heading"></h5>
+                    <p id="sentence" class="mb-0"></p>
+                </div>
+                </p>
+                <div class="progress">
+                    <div id="positive" class="progress-bar bg-success" role="progressbar" style="width: 100%">긍정 1</div>
+                    <div id="negative" class="progress-bar bg-danger" role="progressbar" style="width: 0%">부정 0</div>
+                </div>
+                <hr>
+                <p class="card-text"><small class="text-muted">웹 데모는 BERT 기반으로 분류 작업을 위한 파인튜닝을 완료한 모델을 적용합니다. </p>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function api_call() {
+        var input = $("#input").val();
+        console.log(input);
+        $.ajax({
+            url: "/api",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(input),
+            success: function (data, textStatus, jQxhr) {
+                $('#sentence').html(data.sentence);
+                $('#prediction').html(data.prediction);
+                $('#positive').html(data.positive_data);
+                $('#negative').html(data.negative_data);
+                $('#positive').css('width', data.positive_width);
+                $('#negative').css('width', data.negative_width);
+                $("#input").val("");
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                $('#api_output').html("There was an error");
+                console.log(errorThrown);
+            },
+            timeout: 3000
+        });
+    }
+</script>
