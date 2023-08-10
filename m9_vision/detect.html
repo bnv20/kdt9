@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>detect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">HMKD</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="http://127.0.0.1:5000/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://127.0.0.1:5000/detect">Detect</a>
+            </li>
+            
+          </ul>
+        </div>
+      </nav>
+      <div class = "container my-4 d-flex flex-column align-items-center">      
+        <h1 class="text-dark text-center mb-4"><b>회로 패턴 검사</b></h1>              
+        <img src="/static/img/detect_img.jpg" class="img-fluid mb-4" alt="" width="400">
+        <form class="form-signin" method="post" enctype="multipart/form-data">
+            <p id="input">
+                <input type="file" name="file" class="btn btn-info mb-4" id="inputfile" width="500" multiple>
+            </p>
+            <div class="d-flex justify-content-center">
+                <input type="reset" style="width: 150px" class="btn btn-warning mr-3">
+                <button class="btn btn-secondary w-50" type="submit">검사하기</button>
+            </div>
+            
+        </form>
+      </div>        
+      
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>  
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Show</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .starter-template {
+            text-align: center;
+            margin-top: 50px;            
+
+        }        
+        
+        .leftpage {
+            width: 500px;
+            height: 550px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -600px;
+            margin-top: -270px;
+            background-color: #ebeae3;
+            /* border : 3px solid #120562; */
+            border-radius: 20px;
+        }
+
+        .filetitle {
+            width: 650px;
+            height: 140px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: -80px;
+            margin-top: -250px;
+            background-color: #56cee9;
+            /* border : 1px solid black; */
+            border-radius: 20px;
+        }
+
+        .resultpage {
+            width: 650px;
+            height: 140px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: -80px;
+            margin-top: -100px;
+            background-color: #97C6D6;
+            /* border : 1px solid black; */
+            border-radius: 20px;
+        }
+
+        .defectlist {
+            width: 650px;
+            height: 140px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: -80px;
+            margin-top: 50px;
+            background-color: #efb160;
+            /* border : 1px solid black; */
+            border-radius: 20px;
+        }
+
+        .buttoncon {
+            width: 350px;
+            height: 50px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: 77px;
+            margin-top: 200px;
+            border-radius: 20px;
+        }
+
+        .button {
+            background-color: #FFAACF;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            width: auto;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 22px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">HMKD</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://127.0.0.1:5000/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:5000/detect">Detect</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="starter-template mx-3">
+        <div id="text-center">
+            <div class="mainpage">
+                <div class="leftpage ">
+                    <h2><b>테스트결과</b></h2>
+                    <p><img src={{firstimage}} id="photo" alt="이미지" width="300"></p> <!--첫페이지 이미지 불러오기-->
+                    <h4 id="count">1/{{len(files)}}</h4>
+                </div>
+                <!-- 테스트 결과 정보 테이블 -->
+                <div class="filetitle">
+                    <h3> 파일명 : </h3>
+                    <h4 id="imgname">{{files[0]}}</h4> <!--첫페이지 파일명 불러오기-->
+                </div>
+                <div class="resultpage">
+                    <h3> 검사 결과 : </h3>
+                    <h4 id="resultlabel">{{pf[0]}}</h4> <!--첫페이지 결과값 불러오기-->
+                </div>
+                <div class="defectlist">
+                    <h3> 결함 종류 : </h3>
+                    <h4 id="defect">{{resultlist[0]}}</h4>
+                </div>
+                <div class="buttoncon">
+                    <p>
+                        <button class="button" onclick="changePic(0);">이전</button> <!--버튼-->
+                        <button class="button" onclick="changePic(1);">다음</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <footer class="footer" style="
+             text-align: center;    bottom: 0;">
+        </footer>
+        <script>
+            var num = 0;
+            var filelist = {{ files| tojson}};
+            var resultlist = {{ pf| tojson}}; //  각 이미지의 검사 결과를 가져와 resultlist 변수에 저장
+            var maxnum = filelist.length;
+            var counter = {{ resultlist| tojson}}; // 각 이미지에 대한 검사 결과를 counter 변수에 저장
+
+            function changePic(idx) { //idx라는 매개변수를 사용한 changePic 이름의 함수 생성
+                if (idx) {
+                    if (num == maxnum - 1) return; //num이 maxnum일때 num++ 이전에 강제종료 
+                    num++; //다음 버튼을 누르면 idx값이 1이 되어 num의 값이 1만큼 증가
+                } else {
+                    if (num == 0) return; //num이 0일때 num-- 이전에 강제종료
+                    num--; //이전 버튼을 누르면 idx값이 0이 되어 num의 값이 1만큼 감소
+                }
+                var imgTag = document.getElementById("photo"); // ID를 가진 DOM 요소 (이미지 태그)를 선택하고 imgTag 변수에 저장
+                var file_url = "static/aft/" + filelist[num]; 
+                imgTag.setAttribute("src", file_url); //id값이 photo인 이미지태그 선택 후,//src 속성값을 수정
+
+                document.getElementById("imgname").textContent = filelist[num];     //id값이 imgname인 값 선택 후, 내용 수정
+                document.getElementById("resultlabel").textContent = resultlist[num];
+                document.getElementById("defect").textContent = counter[num];     //id값이 resultlabel인 값 선택 후, 내용 수정
+                document.getElementById("count").textContent = String(num + 1) + '/' + String(maxnum);     //id값이 count인 값 선택 후, 내용 수정
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
